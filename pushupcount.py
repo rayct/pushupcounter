@@ -3,7 +3,7 @@ import mediapipe as md
 
 md_drawing=md.solutions.drawing_utils
 md_drawing_styles=md.solutions.drawing_styles
-md_pose=md.solution.pose
+md_pose=md.solutions.pose
 
 count = 0
 
@@ -25,26 +25,28 @@ with md_pose.Pose(
         result=pose.process(image)
         
         
-        lmlist=[]
+        imlist=[]
         
         if result.pose_landmarks:
             md_drawing.draw_landmarks(
-                image,result.pose_landmarks,md_pose.POSE_CONNECTION)
+                image,result.pose_landmarks,md_pose.POSE_CONNECTIONS)
             for id,im in enumerate(result.pose_landmarks.landmark):
                 h,w,_=image.shape
                 X,Y=int(im.x*w),int(im.y*h)
-                lmlist.append([id,X,Y])
-        if ((lmlist[12][2] - lmlist[14][2])>=15 and (lmlist[11][2] - lmlist[13][2])>=15):
-            position = "down"
-        if ((lmlist[12][2] - lmlist[14][2])<=5 and (lmlist[11][2] - lmlist[13][2])<=5) and position == "down":
-            position = "up"
-            count +=1 
-            print(count)
-            
-            cv2.imshow("Push-up Counter",cv2.flip(image,1))
-            key=cv2.waitKey(1)
-            if key ==ord('q'):
-                break
+                imlist.append([id,X,Y])
+                
+        if len(imlist) != 0:
+            if (imlist[12][2] and imlist[11][2]) >= (imlist[14][2] and imlist[13][2]):
+                position = "down"
+            if (imlist[12][2] and imlist[11][2]) <= (imlist[14][2] and imlist[13][2]) and position == "down":
+                position = "up"
+                count +=1 
+                print(count)
+                
+        cv2.imshow("Push-up Counter",cv2.flip(image,1))
+        key=cv2.waitKey(1)
+        if key ==ord('q'):
+            break
             
 cap.release()
             
