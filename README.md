@@ -1,1 +1,1 @@
-# Push-up counter using Mediapipe Python
+# Push-up Counter using Mediapipe Python
